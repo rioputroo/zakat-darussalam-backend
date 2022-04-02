@@ -1,15 +1,15 @@
 const asyncHandler = require('express-async-handler')
 
 const Zakat = require('../models/zakatModel')
+const User = require('../models/userModel')
 
 // @desc    Get Zakat
 // @route   GET /api/zakat
 // @access  Private
 const getZakat = asyncHandler(async (req, res) => {
-    const zakat = await Zakat.find()
+    const zakat = await Zakat.find({ user: req.user.id })
 
-
-     res.status(200).json(zakat)
+    res.status(200).json(zakat)
 })
 
 // @desc    Set Zakat
@@ -22,7 +22,8 @@ const setZakat = asyncHandler(async (req, res) => {
     }
 
     const zakat = await Zakat.create({
-        text: req.body.text
+        text: req.body.text,
+        user: req.user.id
     })
 
     res.status(200).json(zakat)
@@ -37,6 +38,20 @@ const updateZakat = asyncHandler(async (req, res) => {
     if (!zakat) {
         res.status(400)
         throw new Error('Zakat not found')
+    }
+
+    const user = await User.findById(req.user.id)
+
+    // Check for user
+    if (!user) {
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    // Make sure the logged in user matches the zakat user
+    if (zakat.user.toString() !== user.id) {
+        res.status(401)
+        throw new Error('User not authorized')
     }
 
     const updatedZakat = await Zakat.findByIdAndUpdate(req.params.id, req.body, {new: true})
@@ -54,6 +69,21 @@ const deleteZakat = asyncHandler(async (req, res) => {
         res.status(400)
         throw new Error('Zakat not found')
     }
+
+    const user = await User.findById(req.user.id)
+
+    // Check for user
+    if (!user) {
+        res.status(401)
+        throw new Error('User not found')
+    }
+
+    // Make sure the logged in user matches the zakat user
+    if (zakat.user.toString() !== user.id) {
+        res.status(401)
+        throw new Error('User not authorized')
+    }
+
 
     await zakat.remove()
     
