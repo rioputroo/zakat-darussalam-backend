@@ -1,0 +1,21 @@
+{
+  "name": "zakat-darussalam-backend",
+  "version": "1.0.0",
+  "description": "Aplikasi pencatatan zakat Langgar Waqaf Darussalam Malang",
+  "main": "server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js"
+  },
+  "author": "Rio Trilaksono Putro",
+  "license": "MIT",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "mongoose": "^6.2.9"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
